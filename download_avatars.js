@@ -74,7 +74,7 @@ const constributorsCallback = function downloadAllContributorAvatars(err, result
  * Validates CLI arguments and invokes the beginning of the callback chain
  */
 const main = function runModuleMainFunction() {
-  if (!process.argv[2] || !process.argv[3]) {
+  if (process.argv.length !== 4) {
     console.log('usage: node download_avatars.js <repoOwner> <repoName>');
   } else {
     getRepoContributors(process.argv[2], process.argv[3], constributorsCallback);
