@@ -7,7 +7,7 @@ console.log('Welcome to the GitHub Avatar Downloader!');
 
 const request = require('request');
 const fs = require('fs');
-const apiToken = require('./secrets').GITHUB_API_TOKEN;
+require('dotenv').config();
 
 
 /**
@@ -43,7 +43,7 @@ const getRepoContributors = function getGithubRepoContributors(repoOwner, repoNa
     url: `https://api.github.com/repos/${repoOwner}/${repoName}/contributors`,
     headers: {
       'User-Agent': 'request',
-      Authorization: apiToken
+      Authorization: process.env.GITHUB_API_TOKEN
     }
   };
   request(options, function(err, res, body) { callback(err, res, body); });
