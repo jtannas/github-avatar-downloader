@@ -14,20 +14,24 @@ require('dotenv').config();
  * Download an image at the specified URL
  *
  * @param url: The URL of the image
+ * @param fileDir: The directory to download the file into. Created if not already existing.
  * @param fileName: The name (without extension) of the downloaded file
  */
-const downloadImage = function downloadImageByURL(url, fileName) {
+const downloadImage = function downloadImageByURL(url, fileDir, fileName) {
   let fileType = '';
+  let filePath = fileDir + fileName;
+  if (!fs.existsSync(fileDir)) { fs.mkdirSync(fileDir); }
+
   request.get(url)
     .on('error', err => { throw err; })
     .on('response', response => {
       fileType = response.headers['content-type'].split('/')[1];
       console.log(`Response Code: ${response.statusCode} - ${response.statusMessage}`);
-      console.log(`filename: ./avatars/${fileName}.${fileType}`);
+      console.log(`filePath: ${filePath}.${fileType}`);
     })
-    .pipe(fs.createWriteStream('./avatars/' + fileName)
+    .pipe(fs.createWriteStream(fileDir + fileName)
       .on('error', err => { throw err; })
-      .on('finish', end => fs.renameSync('./avatars/' + fileName, `./avatars/${fileName}.${fileType}`))
+      .on('finish', end => fs.renameSync(filePath, `${filePath}.${fileType}`))
     );
 };
 
@@ -60,7 +64,7 @@ const constributorsCallback = function downloadAllContributorAvatars(err, result
   if (err) { throw err; }
   const contributors = JSON.parse(body);
   contributors.forEach(contributor => {
-    downloadImage(contributor.avatar_url, contributor.login);
+    downloadImage(contributor.avatar_url, './avatars/', contributor.login);
   });
 };
 

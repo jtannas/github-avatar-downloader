@@ -65,5 +65,4 @@ secrets.js
 
 # Avatar images
 avatars/*
-!avatars/.gitkeep
 
