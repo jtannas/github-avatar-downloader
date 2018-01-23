@@ -33,12 +33,15 @@ const getRepoContributors = function getGithubRepoContributors(repoOwner, repoNa
   });
 };
 
+if (!process.argv[2] || !process.argv[3]) {
+  console.log('usage: node download_avatars.js <repoOwner> <repoName>')
+} else {
+  getRepoContributors(process.argv[2], process.argv[3], function(err, result, body) {
+    if (err) { throw err; }
 
-getRepoContributors(process.argv[2], process.argv[3], function(err, result, body) {
-  if (err) { throw err; }
-
-  const contributors = JSON.parse(body);
-  contributors.forEach(contributor => {
-    downloadImage(contributor.avatar_url, contributor.login);
+    const contributors = JSON.parse(body);
+    contributors.forEach(contributor => {
+      downloadImage(contributor.avatar_url, contributor.login);
+    });
   });
-});
+}
