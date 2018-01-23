@@ -63,6 +63,10 @@ const getRepoContributors = function getGithubRepoContributors(repoOwner, repoNa
 const constributorsCallback = function downloadAllContributorAvatars(err, result, body) {
   if (err) { throw err; }
   const contributors = JSON.parse(body);
+  if (contributors.message === "Not Found") {
+    console.log(" --- !!! --- Repo not found --- !!! --- ");
+    return;
+  }
   contributors.forEach(contributor => {
     downloadImage(contributor.avatar_url, './avatars/', contributor.login);
   });
