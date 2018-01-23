@@ -7,8 +7,10 @@ console.log('Welcome to the GitHub Avatar Downloader!');
 
 const request = require('request');
 const fs = require('fs');
-require('dotenv').config();
-
+if (!fs.existsSync('.env')) {
+  throw 'The .env configuration file is missing';
+}
+require('dotenv').config({ silent: false });
 
 /**
  * Download an image at the specified URL
@@ -43,6 +45,7 @@ const downloadImage = function downloadImageByURL(url, fileDir, fileName) {
  * @param callback: A callback function to process the github response
  */
 const getRepoContributors = function getGithubRepoContributors(repoOwner, repoName, callback) {
+  if (!process.env.GITHUB_API_TOKEN) { throw 'The Github API Token is missing from the .env file'; }
   const options = {
     url: `https://api.github.com/repos/${repoOwner}/${repoName}/contributors`,
     headers: {
@@ -63,10 +66,15 @@ const getRepoContributors = function getGithubRepoContributors(repoOwner, repoNa
 const constributorsCallback = function downloadAllContributorAvatars(err, result, body) {
   if (err) { throw err; }
   const contributors = JSON.parse(body);
+
   if (contributors.message === "Not Found") {
     console.log(" --- !!! --- Repo not found --- !!! --- ");
     return;
   }
+  if (result.statusCode !== 200) {
+    throw `${result.statusCode} - ${result.statusMessage}`;
+  }
+
   contributors.forEach(contributor => {
     downloadImage(contributor.avatar_url, './avatars/', contributor.login);
   });
