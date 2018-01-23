@@ -17,6 +17,10 @@ const getRepoContributors = function getGithubRepoContributors(repoOwner, repoNa
 };
 
 getRepoContributors("jquery", "jquery", function(err, result) {
-  console.log("Errors:", err);
-  console.log("Result:", result);
+  if (err) { throw err; }
+
+  const contributors = JSON.parse(result);
+  contributors.forEach(contributor => {
+    console.log(contributor.avatar_url);
+  });
 });
