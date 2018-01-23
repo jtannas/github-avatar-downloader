@@ -33,7 +33,8 @@ const getRepoContributors = function getGithubRepoContributors(repoOwner, repoNa
   });
 };
 
-getRepoContributors("jquery", "jquery", function(err, result, body) {
+
+getRepoContributors(process.argv[2], process.argv[3], function(err, result, body) {
   if (err) { throw err; }
 
   const contributors = JSON.parse(body);
